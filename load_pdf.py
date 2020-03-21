@@ -3,8 +3,8 @@ import tabula
 import pandas as pd
 
 #任意のファイルパスをここに記載(ウェブ上のPDFについてもここで指定できる)
-# FILE_PATH = "https://www.pref.aichi.jp/uploaded/attachment/327109.pdf"
-FILE_PATH = "download.pdf"
+FILE_PATH = "https://www.pref.aichi.jp/uploaded/attachment/327109.pdf"
+
 # ページ数を調べる
 pages = len(tabula.read_pdf(FILE_PATH, pages="all"))
 print("pages:", pages)
