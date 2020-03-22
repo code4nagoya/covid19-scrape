@@ -30,13 +30,13 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./data
         publish_branch: gh-pages
-    - name: comment
-      uses: actions/github-script@0.8.0
-      with:
-        script: |
-          github.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: '1st\n2nd\n3rd'
-          })
+    # - name: comment
+    #   uses: actions/github-script@0.8.0
+    #   with:
+    #     script: |
+    #       github.issues.createComment({
+    #         issue_number: context.issue.number,
+    #         owner: context.repo.owner,
+    #         repo: context.repo.repo,
+    #         body: '1st\n2nd\n3rd'
+    #       })
