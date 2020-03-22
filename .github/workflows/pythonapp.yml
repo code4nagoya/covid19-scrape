@@ -3,11 +3,6 @@
 
 name: Python application
 
-# on:
-#   push:
-#     branches: [ master ]
-#   pull_request:
-#     branches: [ master ]
 on:
   schedule:
     - cron:  '0 * * * *'
@@ -29,3 +24,9 @@ jobs:
     - name: Run code
       run: |
         python main.py
+    - name: deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./data
+        publish_branch: gh-pages

@@ -1,4 +1,5 @@
-#pdfからcsvに変換するのに使う。ページ指定で1枚ずつしか一気に使えないです。
+# pdfからcsvに変換するのに使う。１ページごとにテーブル形式の箇所をdfとして出力する
+# 参考：https://github.com/chezou/tabula-py
 import tabula
 import pandas as pd
 
