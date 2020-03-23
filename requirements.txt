@@ -1,3 +1,0 @@
-tabula-py
-pandas
-beautifulsoup4
