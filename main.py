@@ -4,8 +4,13 @@ import tabula
 import pandas as pd
 from bs4 import BeautifulSoup
 import urllib.request
+import os
 
 base_url = "https://www.pref.aichi.jp"
+
+outdir = './data'
+if not os.path.exists(outdir):
+    os.mkdir(outdir)
 
 def pdf_to_table(FILE_PATH):
     #任意のファイルパスをここに記載(ウェブ上のPDFについてもここで指定できる)
@@ -36,7 +41,7 @@ def pdf_to_table(FILE_PATH):
     del df["No"]
 
     # CSVに書き込み(ファイル名はdata1.py)
-    df.to_csv("data/data1.csv")
+    df.to_csv("./data/data1.csv")
     print(df)
 
 def findpath(url):
