@@ -34,7 +34,7 @@ def convert_table(FILE_PATH):
 
     # 日付のデータを更新する
     df = add_date(df)
-    df.to_csv("./data/sample.csv")
+    df.to_csv("./data/patients.csv")
     return df
 
 def findpath(url):
