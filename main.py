@@ -54,8 +54,6 @@ def convert_json(df):
     nowtime = datetime.now().strftime("%Y/%m/%d %H:%M")
     # 取得したデータをjson形式に変換
     converted = json.loads(df.to_json(orient="table", force_ascii=False))
-    pprint.pprint(converted["data"])
-
     # jsonを作成
     data = {
         "patients":{
@@ -63,6 +61,7 @@ def convert_json(df):
             "data":converted["data"]
         }
     }
+    pprint.pprint(data)
     with codecs.open("./data/data.json", mode="w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 

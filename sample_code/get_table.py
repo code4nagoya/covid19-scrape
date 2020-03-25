@@ -48,9 +48,10 @@ def make_df(rows):
     df = df.loc[:"○クルーズ船感染者の受け入れ"]
     return df
 
-def make_csv(df):
-    people = [df.loc["計", "人数"], df.loc["計", "うち入院"], df.loc["死亡", "人数"]]
-    build_df = pd.DataFrame(people, columns=["人数"], index=["全体", "入院", "死亡"])
+def make_csv(df,subjects):
+    people = [subjects, df.loc["計", "人数"], df.loc["計", "うち入院"], df.loc["死亡", "人数"]]
+    build_df = pd.DataFrame(people, columns=["人数"], index=["検査実施人数","陽性患者数", "入院中", "死亡"])
+    build_df.to_csv("data.csv")
     return build_df
 
 if __name__ == "__main__":    
@@ -60,6 +61,8 @@ if __name__ == "__main__":
 
     tables = bsObj.find_all("table")
     rows = parse_table(tables[0])
+    # 全体の検査件数を調査
+    subjects = parse_table(tables[1])[-1][1].replace(",", "")
     df = make_df(rows)
-    print(make_csv(df))
+    print(make_csv(df, subjects))
 
