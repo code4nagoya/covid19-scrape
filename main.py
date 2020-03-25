@@ -4,7 +4,9 @@ import tabula
 import pandas as pd
 from bs4 import BeautifulSoup
 import urllib.request
-import os
+from datetime import datetime
+import os, json, pprint
+import codecs
 
 base_url = "https://www.pref.aichi.jp"
 
@@ -41,8 +43,9 @@ def pdf_to_table(FILE_PATH):
     del df["No"]
 
     # CSVに書き込み(ファイル名はdata1.py)
-    df.to_csv("./data/data1.csv")
+    df.to_csv("./data/patients.csv")
     print(df)
+    return df
 
 def findpath(url):
     page_url = base_url + url
@@ -56,6 +59,25 @@ def findpath(url):
             break
     return table_link  
 
+def convert_json(df):
+    # 取得時の時間を記録
+    nowtime = datetime.now().strftime("%Y/%m/%d %H:%M")
+    # 取得したデータをjson形式に変換
+    converted = json.loads(df.to_json(orient="table", force_ascii=False))
+    pprint.pprint(converted["data"])
+
+    # jsonを作成
+    data = {
+        "patients":{
+            "date":nowtime,
+            "data":converted["data"]
+        }
+    }
+    with codecs.open("./data/data.json", mode="w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+    
+    
 if __name__ == "__main__":
     FILE_PATH = findpath("/site/covid19-aichi/kansensya-kensa.html")
-    pdf_to_table(FILE_PATH)
+    df = pdf_to_table(FILE_PATH)
+    convert_json(df)
