@@ -42,6 +42,8 @@ def pdf_to_table(FILE_PATH):
     df.index = df["No"]
     del df["No"]
 
+    # 日付のデータを編集する
+    df = add_date(df)
     # CSVに書き込み(ファイル名はdata1.py)
     df.to_csv("./data/patients.csv")
     print(df)
@@ -75,7 +77,14 @@ def convert_json(df):
     }
     with codecs.open("./data/data.json", mode="w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
-    
+
+def add_date(df):
+    df["発表日"] = ["2020年" + date for date in df["発表日"]]
+    df["data"] = pd.to_datetime(df["発表日"], format="%Y年%m月%d日")
+    df["short_date"] = df["data"].dt.strftime("%m/%d")
+    df["w"] = [int(w)+1 if int(w)+1 !=7 else 0 for w in df["data"].dt.dayofweek]
+    return df
+
     
 if __name__ == "__main__":
     FILE_PATH = findpath("/site/covid19-aichi/kansensya-kensa.html")
