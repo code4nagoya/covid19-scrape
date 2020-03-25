@@ -14,7 +14,7 @@ outdir = './data'
 if not os.path.exists(outdir):
     os.mkdir(outdir)
 
-def pdf_to_table(FILE_PATH):
+def convert_table(FILE_PATH):
     #任意のファイルパスをここに記載(ウェブ上のPDFについてもここで指定できる)
     page_url = base_url + FILE_PATH
     # ページ数を調べる
@@ -22,31 +22,19 @@ def pdf_to_table(FILE_PATH):
     print("pages:", pages)
 
     # 1ページ目を読み込む
-    df1 = tabula.read_pdf(page_url, stream=True, pages="1")[0]
-    data1 = df1['発表日 年代・性別'].str.split(" ", expand=True)
-    del df1['発表日 年代・性別'], df1['Unnamed: 0']
-    df1["発表日"] = data1[0]
-    df1["年代・性別"] = data1[1]
+    rows = tabula.read_pdf(page_url, stream=True, pages="all")
+    df = pd.concat(rows, ignore_index=True)
+    # 発表日と年代・性別が一緒のcolumnになっているので、分離する
+    data = df['発表日 年代・性別'].str.split(" ", expand=True)
+    df["発表日"] = data[0]
+    df["年代・性別"] = data[1]
+    df = df.set_index("No")
+    # いらないデータを消す
+    del df['発表日 年代・性別'], df['Unnamed: 0']
 
-    # 2ページ以降はデータにカラムがないので全部結合している
-    dfs = tabula.read_pdf(page_url, stream=True, pages="2-{}".format(pages), pandas_options={'header': None})
-    df2 = pd.concat(dfs, ignore_index=True)
-    data2 = df2[1].str.split(' ', expand=True)
-    del df2[1]
-    df2[7] = data2[0]
-    df2[8] = data2[1]
-    df2.columns = df1.columns
-
-    # 1ページ目と2ページ目以降を結合
-    df = pd.concat([df1, df2], ignore_index=True)
-    df.index = df["No"]
-    del df["No"]
-
-    # 日付のデータを編集する
+    # 日付のデータを更新する
     df = add_date(df)
-    # CSVに書き込み(ファイル名はdata1.py)
-    df.to_csv("./data/patients.csv")
-    print(df)
+    df.to_csv("./data/sample.csv")
     return df
 
 def findpath(url):
@@ -88,5 +76,7 @@ def add_date(df):
     
 if __name__ == "__main__":
     FILE_PATH = findpath("/site/covid19-aichi/kansensya-kensa.html")
-    df = pdf_to_table(FILE_PATH)
+    # df = pdf_to_table(FILE_PATH)
+    df = convert_table(FILE_PATH)
+    print(df)
     convert_json(df)

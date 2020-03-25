@@ -43,10 +43,15 @@ def parse_table(table):
 
 def make_df(rows):
     df = pd.DataFrame(rows[1:])
-    df.index = df[0]
-    del df[0]
+    df = df.set_index(0)
     df.columns = ["人数", "うち入院"]
+    df = df.loc[:"○クルーズ船感染者の受け入れ"]
     return df
+
+def make_csv(df):
+    people = [df.loc["計", "人数"], df.loc["計", "うち入院"], df.loc["死亡", "人数"]]
+    build_df = pd.DataFrame(people, columns=["人数"], index=["全体", "入院", "死亡"])
+    return build_df
 
 if __name__ == "__main__":    
     # URLの指定
@@ -56,4 +61,5 @@ if __name__ == "__main__":
     tables = bsObj.find_all("table")
     rows = parse_table(tables[0])
     df = make_df(rows)
-    print(df)
+    print(make_csv(df))
+
