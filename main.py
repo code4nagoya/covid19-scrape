@@ -34,7 +34,7 @@ def convert_table(FILE_PATH):
     pages = len(tabula.read_pdf(page_url, pages="all"))
     print("pages:", pages)
 
-    # 1ページ目を読み込む
+    # 全ページを読み込む
     rows = tabula.read_pdf(page_url, stream=True, pages="all")
     df = pd.concat(rows, ignore_index=True)
     # 発表日と年代・性別が一緒のcolumnになっているので、分離する
@@ -42,8 +42,8 @@ def convert_table(FILE_PATH):
     df["発表日"] = data[0]
     df["年代・性別"] = data[1]
     df = df.set_index("No")
-    # いらないデータを消す
-    del df['発表日 年代・性別'], df['Unnamed: 0']
+    # 必要なデータだけを残す
+    df = df[["No", "発表日", "年代・性別", "国籍", "住居地", "接触状況", "備考"]]
 
     # 日付のデータを更新する
     df = add_date(df)
@@ -64,8 +64,9 @@ def build_table(FILE_PATH):
     data = df1['発表日 年代・性別'].str.split(" ", expand=True)
     df1["発表日"] = data[0]
     df1["年代・性別"] = data[1]
-    # いらないデータを消す
-    del df1['発表日 年代・性別'], df1['Unnamed: 0']
+    # 必要なデータだけを残す
+    df1 = df1[["No", "発表日", "年代・性別", "国籍", "住居地", "接触状況", "備考"]]
+    print(df1)
 
     # 2ページ以降はデータにカラムがないので全部結合している
     rows = tabula.read_pdf(page_url, stream=True, pages="2-{}".format(pages), pandas_options={"header":None})
