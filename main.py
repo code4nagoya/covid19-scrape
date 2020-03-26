@@ -35,6 +35,42 @@ def convert_table(FILE_PATH):
     # 日付のデータを更新する
     df = add_date(df)
     df.to_csv("./data/patients.csv")
+    print(df.dtypes)
+    return df
+
+def build_table(FILE_PATH):
+     #任意のファイルパスをここに記載(ウェブ上のPDFについてもここで指定できる)
+    page_url = base_url + FILE_PATH
+    # ページ数を調べる
+    pages = len(tabula.read_pdf(page_url, pages="all"))
+    print("pages:", pages)
+
+    # 1ページ目を読み込む
+    df1 = tabula.read_pdf(page_url, stream=True, pages="1")[0]
+    # 発表日と年代・性別が一緒のcolumnになっているので、分離する
+    data = df1['発表日 年代・性別'].str.split(" ", expand=True)
+    df1["発表日"] = data[0]
+    df1["年代・性別"] = data[1]
+    # いらないデータを消す
+    del df1['発表日 年代・性別'], df1['Unnamed: 0']
+
+    # 2ページ以降はデータにカラムがないので全部結合している
+    rows = tabula.read_pdf(page_url, stream=True, pages="2-{}".format(pages), pandas_options={"header":None})
+    df2 = pd.concat(rows, ignore_index=True)
+    data2 = df2[1].str.split(' ', expand=True)
+    del df2[1]
+    df2[7] = data2[0]
+    df2[8] = data2[1]
+    df2.columns = df1.columns
+    print(df2)
+
+    # １ページ目と２ページ目以降を結合
+    df = pd.concat([df1, df2], ignore_index=True)
+    df = df.set_index("No")
+
+    # 日付のデータを更新する
+    df = add_date(df)
+    df.to_csv("./data/patients.csv")
     return df
 
 def findpath(url):
@@ -128,12 +164,14 @@ def convert_json(df):
                 ]
         }
     }
-    pprint.pprint(data)
+    # pprint.pprint(data)
     with codecs.open("./data/data.json", mode="w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
 if __name__ == "__main__":
     FILE_PATH = findpath("/site/covid19-aichi/kansensya-kensa.html")
-    df = convert_table(FILE_PATH)
-    print(df)
+    try:
+        df = build_table(FILE_PATH)
+    except:
+        df = convert_table(FILE_PATH)
     convert_json(df)
