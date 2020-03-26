@@ -5,6 +5,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 import urllib.request
 from datetime import datetime
+from datetime import timedelta
 import os, json, pprint
 import codecs
 
@@ -108,10 +109,19 @@ def load_subject():
 def convert_json(df):
     # 取得時の時間を記録
     nowtime = datetime.now().strftime("%Y/%m/%d %H:%M")
-    # 取得したデータをjson形式に変換
+    # 日ごとの感染者数をカウントする
     converted = json.loads(df.to_json(orient="table", force_ascii=False))
     val_count = df["date"].value_counts(sort=False)
-    patients_sumlist = [{"日付":date, "小計":int(val_count[date]) } for date in val_count.index]
+    val_count = val_count.sort_index()
+
+    # 開始日から最新の日付までのリストを作成
+    strdt = datetime.strptime(val_count.index[0], '%Y-%m-%d')  # 開始日
+    enddt = datetime.strptime(val_count.index[-1], '%Y-%m-%d')  # 終了日
+    days_num = (enddt - strdt).days + 1
+    dates_list = [(strdt + timedelta(i)).strftime('%Y-%m-%d') for i in range(days_num)]
+
+    # 各日の感染者数をリスト化（誰もいないときは0として出力）
+    patients_sumlist = [{"日付":date, "小計":int(val_count[date])} if date in val_count.index else {"日付":date, "小計":0} for date in dates_list]
     # スプレッドシートのデータを取得する
     sum_df = load_subject()
     # jsonを作成
