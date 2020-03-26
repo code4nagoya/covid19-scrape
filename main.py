@@ -14,6 +14,18 @@ base_url = "https://www.pref.aichi.jp"
 outdir = './data'
 if not os.path.exists(outdir):
     os.mkdir(outdir)
+    
+def findpath(url):
+    page_url = base_url + url
+    raw_html = urllib.request.urlopen(page_url)
+    soup = BeautifulSoup(raw_html, "html.parser")
+    for aa in soup.find_all("a"):
+        link = aa.get("href")
+        name = aa.get_text()
+        if "県内発生事例一覧" in name:
+            table_link = link
+            break
+    return table_link 
 
 def convert_table(FILE_PATH):
     #任意のファイルパスをここに記載(ウェブ上のPDFについてもここで指定できる)
@@ -74,19 +86,6 @@ def build_table(FILE_PATH):
     print(df)
     return df
 
-def findpath(url):
-    page_url = base_url + url
-    raw_html = urllib.request.urlopen(page_url)
-    soup = BeautifulSoup(raw_html, "html.parser")
-    for aa in soup.find_all("a"):
-        link = aa.get("href")
-        name = aa.get_text()
-        if "県内発生事例一覧" in name:
-            table_link = link
-            break
-    return table_link  
-
-
 def add_date(df):
     df["発表日"] = ["2020年" + date for date in df["発表日"]]
     basedate = pd.to_datetime(df["発表日"], format="%Y年%m月%d日")
@@ -109,8 +108,8 @@ def load_subject():
 def convert_json(df):
     # 取得時の時間を記録
     nowtime = datetime.now().strftime("%Y/%m/%d %H:%M")
-    # 日ごとの感染者数をカウントする
     converted = json.loads(df.to_json(orient="table", force_ascii=False))
+    # 日ごとの感染者数をカウントする
     val_count = df["date"].value_counts(sort=False)
     val_count = val_count.sort_index()
 
