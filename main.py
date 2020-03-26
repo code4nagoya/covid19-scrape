@@ -63,7 +63,6 @@ def build_table(FILE_PATH):
     df2[7] = data2[0]
     df2[8] = data2[1]
     df2.columns = df1.columns
-    print(df2)
 
     # １ページ目と２ページ目以降を結合
     df = pd.concat([df1, df2], ignore_index=True)
@@ -72,6 +71,7 @@ def build_table(FILE_PATH):
     # 日付のデータを更新する
     df = add_date(df)
     df.to_csv("./data/patients.csv")
+    print(df)
     return df
 
 def findpath(url):
