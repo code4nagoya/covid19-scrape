@@ -42,6 +42,8 @@ def convert_table(FILE_PATH):
     data = df['発表日 年代・性別'].str.split(" ", expand=True)
     df["発表日"] = data[0]
     df["年代・性別"] = data[1]
+    # データを文字列型に変換
+    df = df.astype(str).replace("nan", "")
     df = df.set_index("No")
     # 必要なデータだけを残す
     df = df[["No", "発表日", "年代・性別", "国籍", "住居地", "接触状況", "備考"]]
@@ -79,6 +81,7 @@ def build_table(FILE_PATH):
 
     # １ページ目と２ページ目以降を結合
     df = pd.concat([df1, df2], ignore_index=True)
+    # データを文字列に変換
     df = df.astype(str).replace("nan", "")
     df = df.set_index("No")
 
