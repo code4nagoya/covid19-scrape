@@ -65,8 +65,7 @@ def build_table(FILE_PATH):
     df1["発表日"] = data[0]
     df1["年代・性別"] = data[1]
     # 必要なデータだけを残す
-    df1 = df1[["No", "発表日", "年代・性別", "国籍", "住居地", "接触状況", "備考"]]
-    print(df1)
+    df1 = df1[["No", "国籍", "住居地", "接触状況", "備考" , "発表日", "年代・性別"]]
 
     # 2ページ以降はデータにカラムがないので全部結合している
     rows = tabula.read_pdf(page_url, stream=True, pages="2-{}".format(pages), pandas_options={"header":None})
@@ -88,7 +87,8 @@ def build_table(FILE_PATH):
     return df
 
 def add_date(df):
-    df["発表日"] = ["2020年" + date for date in df["発表日"]]
+    print(df["発表日"])
+    df["発表日"] = ["2020年" + str(date) for date in df["発表日"]] 
     basedate = pd.to_datetime(df["発表日"], format="%Y年%m月%d日")
     df["date"] = basedate.dt.strftime("%Y-%m-%d")
     df["short_date"] = basedate.dt.strftime("%m\\/%d")
