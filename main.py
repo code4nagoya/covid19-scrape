@@ -79,6 +79,7 @@ def build_table(FILE_PATH):
 
     # １ページ目と２ページ目以降を結合
     df = pd.concat([df1, df2], ignore_index=True)
+    df = df.astype(str).replace("nan", "")
     df = df.set_index("No")
 
     # 日付のデータを更新する
@@ -91,9 +92,10 @@ def add_date(df):
     print(df["発表日"])
     df["発表日"] = ["2020年" + str(date) for date in df["発表日"]] 
     basedate = pd.to_datetime(df["発表日"], format="%Y年%m月%d日")
+    df["発表日"] = basedate.dt.strftime("%Y/%m/%d %H:%M")
     df["date"] = basedate.dt.strftime("%Y-%m-%d")
     df["short_date"] = basedate.dt.strftime("%m\\/%d")
-    df["w"] = [int(w)+1 if int(w)+1 !=7 else 0 for w in basedate.dt.dayofweek]
+    df["w"] = [str(int(w)+1) if int(w)+1 !=7 else "0" for w in basedate.dt.dayofweek]
     return df
 
 def load_subject():
