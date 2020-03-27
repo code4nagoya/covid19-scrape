@@ -8,6 +8,7 @@ from datetime import datetime
 from datetime import timedelta
 import os, json, pprint
 import codecs
+import traceback
 
 base_url = "https://www.pref.aichi.jp"
 
@@ -183,5 +184,9 @@ if __name__ == "__main__":
     try:
         df = build_table(FILE_PATH)
     except:
-        df = convert_table(FILE_PATH)
-    convert_json(df)
+        print("===============================================")
+        traceback.print_exc()
+        print("===============================================")
+        df= convert_table(FILE_PATH)
+    else:
+        convert_json(df)
