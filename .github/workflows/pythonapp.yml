@@ -18,7 +18,7 @@ jobs:
       with:
         python-version: 3.8
     - name: Install tk and ghostscript
-     run: |
+      run: |
         apt install python3-tk ghostscript
     - name: Install dependencies
       run: |
