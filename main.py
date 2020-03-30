@@ -51,6 +51,7 @@ def convert_table(FILE_PATH):
     df = add_date(df).fillna("")
     str_index = pd.Index([str(num) for num in list(df.index)])
     df = df.set_index(str_index)
+    df.index.name = "No"
     print(df)
     return df
 
@@ -151,7 +152,6 @@ def convert_json(df):
                 ]
         }
     }
-    # pprint.pprint(data)
     with codecs.open("./data/data.json", mode="w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
 
