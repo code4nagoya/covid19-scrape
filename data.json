@@ -1,6 +1,6 @@
 {
   "patients": {
-    "date": "2020/04/14 06:02",
+    "date": "2020/04/14 09:02",
     "data": [
       {
         "No": "1",
@@ -4037,7 +4037,7 @@
     ]
   },
   "patients_summary": {
-    "date": "2020/04/14 06:02",
+    "date": "2020/04/14 09:02",
     "data": [
       {
         "日付": "2020-01-26",
@@ -4357,32 +4357,32 @@
       }
     ]
   },
-  "lastUpdate": "2020/04/14 06:02",
+  "lastUpdate": "2020/04/14 09:02",
   "main_summary": {
     "attr": "検査実施人数",
-    "value": 3990,
+    "value": 4372,
     "children": [
       {
         "attr": "陽性患者数",
-        "value": 324,
+        "value": 333,
         "children": [
           {
             "attr": "入院中",
-            "value": 185,
+            "value": 186,
             "children": [
               {
                 "attr": "軽症・中等症",
-                "value": 179
+                "value": 181
               },
               {
                 "attr": "重症",
-                "value": 6
+                "value": 5
               }
             ]
           },
           {
             "attr": "退院",
-            "value": 95
+            "value": 103
           },
           {
             "attr": "転院",
